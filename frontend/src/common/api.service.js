@@ -1,4 +1,4 @@
-import CSRF_TOKEN from './csrf_token.js'
+import { CSRF_TOKEN } from './csrf_token.js'
 
 async function getJSON(response) {
     if (response.status === 204) return '';
@@ -7,7 +7,7 @@ async function getJSON(response) {
 
 function apiService(endpoint, method, data) {
     const config = {
-        method: method || GET,
+        method: method || "GET",
         body: data !== undefined ? JSON.stringify(data) : null,
         headers: {
             'content-type': 'application/json',
@@ -16,8 +16,7 @@ function apiService(endpoint, method, data) {
     };
     return fetch(endpoint, config)
         .then(getJSON)
-        .catch(error => console.log(error)
-        )
+        .catch(error => console.log(error)); // eslint-disable-line no-console
 }
 
 export { apiService };
