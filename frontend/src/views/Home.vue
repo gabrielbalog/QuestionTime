@@ -2,12 +2,19 @@
   <div class="home">
     <div class="container">
       <div v-for="question in questions" :key="question.pk">
-        <p class="mb-0">Posted By:
-          <span class="author-name">{{ question.author }}</span>
+        <p class="mb-0">
+          Posted By:
+          <span class="question-author">{{ question.author }}</span>
         </p>
-        <h2>{{ question.content }}</h2>
+        <h2>
+          <router-link
+            :to="{ name: 'question', params: { slug: question.slug } }"
+            class="question-link"
+            >{{ question.content }}</router-link
+          >
+        </h2>
         <p>Answers: {{ question.answers_count }}</p>
-        <hr>
+        <hr />
       </div>
     </div>
   </div>
@@ -24,7 +31,7 @@ export default {
   },
   methods: {
     getQuestions() {
-      let endpoint = "api/questions/";
+      let endpoint = "/api/questions/";
       apiService(endpoint).then(data => {
         this.questions.push(...data.results);
       });
@@ -32,13 +39,22 @@ export default {
   },
   created() {
     this.getQuestions();
+    document.title = "QuestionTime";
   }
 };
 </script>
 
 <style scoped>
-.author-name {
+.question-author {
   font-weight: bold;
-  color: #DC3545;
+  color: #dc3545;
+}
+.question-link {
+  font-weight: bold;
+  color: black;
+}
+.question-link:hover {
+  color: #343a40;
+  text-decoration: none;
 }
 </style>
