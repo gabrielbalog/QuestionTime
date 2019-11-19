@@ -34,7 +34,13 @@
       <hr />
     </div>
     <div class="container">
-      <AnswerComponent v-for="(answer, index) in answers" :key="index" :answer="answer"></AnswerComponent>
+      <AnswerComponent
+        v-for="(answer, index) in answers"
+        :key="index"
+        :answer="answer"
+        :requestUser="requestUser"
+        @delete-answer="deleteAnswer"
+      ></AnswerComponent>
       <div class="my-4">
         <p v-show="loadingAnswers">...loading</p>
         <button
@@ -71,10 +77,14 @@ export default {
       userHasAnswered: false,
       showForm: false,
       next: null,
-      loadingAnswers: false
+      loadingAnswers: false,
+      requestUser: null
     };
   },
   methods: {
+    setRequestUser() {
+      this.requestUser = window.localStorage.getItem("username");
+    },
     setPageTitle(title) {
       document.title = title;
     },
@@ -120,11 +130,22 @@ export default {
       } else {
         this.error = "You can't send an empty answer!";
       }
+    },
+    async deleteAnswer(answer) {
+      let endpoint = `/api/answers/${answer.id}/`;
+      try {
+        await apiService(endpoint, "DELETE");
+        this.$delete(this.answers, this.answers.indexOf(answer));
+        this.userHasAnswered = false;
+      } catch (err) {
+        // console.log(err)
+      }
     }
   },
   created() {
     this.getQuestionData();
     this.getQuestionAnswers();
+    this.setRequestUser();
   }
 };
 </script>
